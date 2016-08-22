@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="css/style.css">
+	<title>随机字符串生成</title>
+	<script>
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+
+	$(function(){
+	  $("#btn-copy").click(function(){
+	  	
+	    var msg=document.getElementById("i_result").value;
+	    //alert(msg);
+	 });
+	});
+
+	function Rand(seed){
+		var r=0;
+		r=Math.random();
+		r=r*10000;
+		r=Math.round(r);
+		r=r%200;
+		return r;
+	}
+
+	function GenerateStarter(){
+		var t=document.getElementById("i_length").value;
+		var ifOK=false;
+		switch(isNaN(t)){
+			case true:
+				document.getElementById("form-group-len").className=document.getElementById("form-group-len").className+" has-error";
+				document.getElementById("err-info-1").style.display="block";
+				break;
+			case false:
+				document.getElementById("form-group-len").className="form-group";
+				document.getElementById("err-info-1").style.display="none";
+				
+				break;
+		}
+		var ifnum=document.getElementById("i_c_num").checked;
+		var ifuletter=document.getElementById("i_c_uletter").checked;
+		var ifdletter=document.getElementById("i_c_dletter").checked;
+		var ifchar=document.getElementById("i_c_char").checked;
+		var ifsel=(ifnum||ifuletter||ifdletter||ifchar);
+		switch(ifsel)
+		{
+			case true:
+			document.getElementById("form-group-sel").className="form-group";
+				document.getElementById("err-info-2").style.display="none";
+				
+				break;
+			case false:
+			    document.getElementById("form-group-sel").className=document.getElementById("form-group-sel").className+" has-error";
+				document.getElementById("err-info-2").style.display="block";
+				break;
+
+		}
+
+        ifOK=(!isNaN(t))&&ifsel;
+		
+		if(ifOK){GenerateCode();}
+	}
+
+	function GenerateCode(){
+		var goodcode=false;
+		var len=document.getElementById("i_length").value;
+		var ifnum=document.getElementById("i_c_num").checked;
+		var ifuletter=document.getElementById("i_c_uletter").checked;
+		var ifdletter=document.getElementById("i_c_dletter").checked;
+		var ifchar=document.getElementById("i_c_char").checked;
+		var out=document.getElementById("i_out").value;
+		out=" " +out;
+		//alert(ifnum+","+ifuletter+","+ifdletter+","+ifchar+","+out);
+		var code;
+		var i,n;
+		var str="";
+		var debug="";
+		var num=document.getElementById("i_num").value;
+		var finalstr="";
+		for(n=0;n<num;n++){
+			for(i=0;i<len;i++) {
+				code=0;
+				goodcode=false;
+				while(goodcode==false)
+				{
+					goodcode=true;
+					Math.seed=i;
+					code=Rand(i);
+					/*code=Math.random();
+					debug+=code+'\n';
+					code=code*100;
+					code=Math.round(code);*/
+					//是否在大范围内
+					if(code > 32 && code < 127)
+					{ goodcode=goodcode; debug+=true+'\n';}
+					else { goodcode= false; debug+=false+'\n'; }
+
+					//是否是数字
+					if(ifnum==false && goodcode && code > 47 && code < 58)
+					{ goodcode= false; debug+=false+'\n';}
+					else { goodcode=goodcode;  debug+=true+'\n'; }
+
+					//是否是小写字母
+					if(ifdletter==false && goodcode==true && code>96 && code<123)
+					{ goodcode= false; debug+=false+'\n';}
+					else { goodcode=goodcode; debug+=true+'\n'; }
+
+					//是否是大写字母
+					if(ifuletter==false && goodcode==true && code>64 && code<91)
+					{ goodcode= false; debug+=false+'\n';}
+					else {goodcode=goodcode;  debug+=true+'\n'; }
+
+					//是否是特殊符号
+					if(ifchar==false && goodcode==true && ( (code > 32 && code < 48) || (code>57 && code<65 )|| (code>90 && code<97) || (code>122 && code<127) ) )
+					{ goodcode= false; debug+=false+'\n';}
+					else { goodcode=goodcode; debug+=true+'\n'; }
+
+					//是否在排除列表中
+					var l=String.fromCharCode(code);
+					if(out.indexOf(l)>0) { goodcode= false; debug+=false+'\n';} else {debug+=true+'\n'; }
+					if(goodcode) break;
+				}
+				//alert(goodcode+'\n'+code+'\n'+debug);
+				str+=String.fromCharCode(code);
+				//sleep(10);
+		    }
+		    if(num>1)
+		    	{ finalstr=finalstr.concat("====================\n Code ",n+1,"\n====================\n",str,'\n\n'); }
+		    else
+		    {
+		    	finalstr=str;
+		    }
+		    
+		   
+		    str="";
+
+		}
+		
+		document.getElementById("i_result").value=finalstr;
+		document.getElementById("dlLink").href = "data:text/plain," +finalstr;
+		//alert(debug);
+		
+	}
+
+	function NumUpDown(operator){
+		var num=document.getElementById("i_num").value;
+		switch(operator){
+			case '+':
+				num++;
+				break;
+			case '-':
+				if(num>1){num--;};
+				break;	
+		}
+		document.getElementById("i_num").value=num;
+
+	}
+
+	function NumChange(){
+		var num=document.getElementById("i_num").value;
+		var newnum="";
+		if(isNaN(num)){
+			for(var i=0;i<num.length;i++){
+				if(!isNaN(num.slice(i,i+1))){newnum+=num.slice(i,i+1);}
+			}
+
+			
+			document.getElementById("i_num").value=newnum;
+
+		}
+		if(document.getElementById("i_num").value.length==0) 
+			{document.getElementById("i_num").value="1"; }
+		
+	}
+
+	
+	</script>
+	<style>
+	* {
+		font-family: "微软雅黑";
+	}
+	label {
+		font-size: 16px;
+	}
+	#err-info-1 {
+		display: none;
+	}
+	#err-info-2 {
+		display: none;
+	}
+	input[type="checkbox"]{
+		opacity: 0;
+	}
+	
+	.numbtn {
+		display: block;
+		border-radius: 0px;
+	}
+	.sidebtn {
+		clear: both;
+		display: block;
+	}
+	.result-container .input-group-addon{
+		padding: 0px;
+	}
+	.result-container .btn {
+		padding:0px 10px 0px 10px;
+		height: 70px;
+		border-radius: 0px;
+		line-height: 70px;
+		font-size: 17px;
+	}
+	#i_result{
+		font-family: Consolas;
+		font-size: 19px;
+		word-break:break-all;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+	<div class="row" style="text-align:center;"><h2>随机字符串生成</h2></div>
+    <form class="form form-horizontal">
+    	<div class="form-group" id="form-group-len">
+    		<label class="control-label col-sm-2">长度</label>
+    		<div class="col-sm-10"><input type="type" id="i_length" class="form-control"><label class="control-label" id="err-info-1">请输入一个大于0的整数</label></div>
+    	</div>
+    	<div class="form-group" id="form-group-sel">
+    		<label class="control-label col-sm-2">要包括的内容</label>
+    		<div class="col-sm-10" >
+    			<div class="selector-container" style="position:relative;clear:both">
+    			    <input type="checkbox" id="i_c_num" class="selector-checkbox" checked>
+    				<label class="selector" for="i_c_num">数字</label>
+
+    				<input type="checkbox" id="i_c_dletter" class="selector-checkbox" checked>
+    				<label class="selector" for="i_c_dletter">小写字母</label>
+    				<input type="checkbox" id="i_c_uletter" class="selector-checkbox" checked>
+    				<label class="selector" for="i_c_uletter">大写字母</label>
+    				
+    				<input type="checkbox" id="i_c_char" class="selector-checkbox">
+    				<label class="selector" for="i_c_char">特殊符号</label>
+    				
+
+    			</div>
+
+    			<label class="control-label" id="err-info-2">请至少选择一项</label>
+    		</div>
+    	</div>
+    	<div class="form-group">
+    		<label class="control-label col-sm-2">排除的字符</label>
+    		<div class="col-sm-10"><input type="text" id="i_out" class="form-control"></div>
+    	</div>
+
+    	<div class="form-group">
+    		<label class="control-label col-sm-2">数量</label>
+    		<div class="input-group col-sm-10 numcontainer" style="padding-left:15px; padding-right:15px; width:150px; text-align:center;">
+    		    <div class="input-group-addon btn btn-warning" onclick="NumUpDown('-')">-</div>
+    			<input type="text" id="i_num" class="form-control" onchange="NumChange()" value="1" >
+    			<div class="input-group-addon btn btn-info" onclick="NumUpDown('+')">+</div>
+    		</div>
+    	</div>
+
+    	<div class="form-group">
+    		<label class="control-label col-sm-2">结果</label>
+			<div class="input-group col-sm-10 result-container" style="padding-left:15px; padding-right:15px;">
+				
+				<textarea class="form-control" id="i_result" style="height:140px;"></textarea>
+				<div class="input-group-addon">
+					<div class="btn btn-success sidebtn" onclick="GenerateStarter()" data-toggle="tooltip" data-placement="left" title="生成">点击生成</div>
+					<a id="dlLink" download="RandomString.txt" href="data:text/plain,testtext123456" class="btn btn-primary sidebtn" data-toggle="tooltip" data-placement="left" title="下载txt">下载</a>
+				</div>
+				
+		    </div>
+    	</div>
+    	
+  
+    </form>
+</div>
+</body>
+</html>

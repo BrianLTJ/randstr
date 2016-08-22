@@ -1,0 +1,69 @@
+$color-input-normal-border-normstate:#aedd81;
+$color-input-normal-shadow:#aedd81;
+$color-input-normal-border-hover:#6bc235;
+
+$input-height:34px;
+
+$input-fontsize:16px;
+
+$input-shadow-position:2px;
+$input-shadow-blur:1.5px;
+
+$selector-color-notselected:#ffffff;
+$selector-color-selected:#5bc0de;
+$selector-border-color-notselected:#b1b1b1;
+$selector-border-color-selected:#46b8da;
+
+/* 
+*-----------------
+*定义input样式 
+*-----------------
+*/
+
+/*
+ * input-normal
+ */
+
+.input-normal {
+	font-size:$input-fontsize;
+	margin-left:auto;
+	margin-right:auto;
+	padding: auto 5px;
+	border:1px solid $color-input-normal-border-normstate;
+
+	:focus {
+		border:5px solid $color-input-normal-border-hover;
+		box-shadow: -$input-shadow-position -$input-shadow-position $input-shadow-blur $color-input-normal-shadow;
+	}
+}
+
+input.input-normal{
+	line-height:$input-height;
+	height:$input-height;
+	width:100%;
+}
+
+.selector {
+	background-color: $selector-color-notselected;
+	border:1px solid $selector-border-color-notselected;
+	width:70px;
+	height:40px;
+	display:block;
+	float:left;
+	line-height:40px;
+	text-align:center;
+	font-size:16px;
+	font-weight:normal;
+	color:#000000;
+}
+
+.selector-checkbox {
+	position:fixed;
+	left:0px;
+}
+
+.selector-checkbox:checked+.selector{
+	background-color:$selector-color-selected;
+	border:1px solid $selector-border-color-selected;
+	color:#ffffff;
+}
